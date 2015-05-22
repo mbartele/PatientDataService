@@ -1,0 +1,24 @@
+May 22, 2015 1:42:59 AM oracle.mds
+NOTIFICATION: PManager instance is created without multitenancy support as JVM flag "oracle.multitenant.enabled" is not set to enable multitenancy support.
+May 22, 2015 1:42:59 AM oracle.security.jps.internal.config.xml.XmlConfigurationFactory initDefaultConfiguration
+SEVERE: java.io.FileNotFoundException: ./config/jps-config.xml (No such file or directory)
+May 22, 2015 1:42:59 AM oracle.mds
+NOTIFICATION: Auditing is disabled for component MDS.
+May 22, 2015 1:42:59 AM oracle.fabric.common.wsdl.SchemaManager isIncrementalBuildSupported
+INFO: XMLSchema incremental build enabled.
+May 22, 2015 1:42:59 AM com.collaxa.cube.CubeLogger info
+INFO: validating "PatientDataService.bpel" ...
+May 22, 2015 1:43:00 AM oracle.integration.platform.blocks.FabricConfigManager <clinit>
+WARNING: JRF is unable to determine the current application server platform.
+May 22, 2015 1:43:00 AM oracle.integration.platform.blocks.WLSPlatformConfigurationProvider <clinit>
+WARNING: JRF is unable to determine the current application server platform.
+May 22, 2015 1:43:00 AM com.collaxa.cube.CubeLogger info
+INFO: Composed "PatientDataService" in 49.1 milliseconds [nodes 14=0+14, 284.9 nodes/sec]
+May 22, 2015 1:43:02 AM com.collaxa.cube.CubeLogger info
+INFO: Compiled "PatientDataService" in 1.409 seconds
+May 22, 2015 1:43:02 AM com.collaxa.cube.CubeLogger info
+INFO: Gathered 3 files in 0.5 milliseconds
+
+May 22, 2015 1:43:02 AM com.collaxa.cube.CubeLogger info
+INFO: Packaged "PatientDataService" in 9.4 milliseconds
+
