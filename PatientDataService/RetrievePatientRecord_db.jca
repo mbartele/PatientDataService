@@ -1,0 +1,14 @@
+<adapter-config name="RetrievePatientRecord" adapter="Database Adapter" wsdlLocation="RetrievePatientRecord.wsdl" xmlns="http://platform.integration.oracle/blocks/adapter/fw/metadata">
+  
+  <connection-factory location="eis/DB/patientsDatabase" UIConnectionName="Patients_mgt" adapterRef=""/>
+  <endpoint-interaction portType="RetrievePatientRecord_ptt" operation="RetrievePatientRecord">
+    <interaction-spec className="oracle.tip.adapter.db.DBStoredProcedureInteractionSpec">
+      <property name="SchemaName" value="PATIENTS_MGT"/>
+      <property name="PackageName" value="PATIENT_DATA_SERVICES"/>
+      <property name="ProcedureName" value="GET_PATIENT_RECORD"/>
+      <property name="GetActiveUnitOfWork" value="false"/>
+    </interaction-spec>
+    <output/>
+  </endpoint-interaction>
+
+</adapter-config>

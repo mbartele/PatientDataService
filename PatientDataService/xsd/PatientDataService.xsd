@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<schema targetNamespace="http://stmatthews.hospital.com/patient/PatientDataService"
+        xmlns:hospital="http://stmatthews.hospital.com/patient/PatientDataService"
+        xmlns="http://www.w3.org/2001/XMLSchema">
+  <element name="PatientDataServiceProcessRequest"
+           type="hospital:patientIdType" />
+  <element name="PatientDataServiceProcessResponse"
+           type="hospital:patientType"/>
+  <complexType name="patientIdType">
+    <sequence>
+      <element name="patientId" type="int" minOccurs="0"/>
+      <element name="firstName" type="string" minOccurs="0"/>
+      <element name="lastName" type="string" minOccurs="0"/>
+    </sequence>
+  </complexType>
+  <complexType name="patientType">
+    <sequence>
+      <element name="name" type="string"/>
+      <element name="initials" type="string"/>
+      <element name="gender" type="string"/>
+      <element name="birthDate" type="date"/>
+      <element ref="hospital:physicalCharacteristic" maxOccurs="unbounded"/>
+    </sequence>
+  </complexType>
+  <element name="physicalCharacteristic">
+    <complexType>
+      <sequence>
+        <element name="dateOfMeasurement" type="date"/>
+        <element name="whatWasMeasured" type="string"/>
+        <element name="measuredValue" type="decimal"/>
+        <element name="unitOfMeasurement" type="string" minOccurs="0"/>
+      </sequence>
+    </complexType>
+  </element>
+</schema>

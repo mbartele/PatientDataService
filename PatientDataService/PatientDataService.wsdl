@@ -1,0 +1,31 @@
+<wsdl:definitions
+     name="PatientDataService"
+     targetNamespace="http://stmatthews.hospital.com/patient/PatientDataService"
+     xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+     xmlns:client="http://stmatthews.hospital.com/patient/PatientDataService"
+     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+    >
+    <plnk:partnerLinkType name="PatientDataService">
+        <plnk:role name="PatientDataServiceProvider">
+            <plnk:portType name="client:PatientDataService"/>
+        </plnk:role>
+    </plnk:partnerLinkType>
+    <wsdl:types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/"
+             xmlns:client="http://stmatthews.hospital.com/patient/PatientDataService" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+            <import namespace="http://stmatthews.hospital.com/patient/PatientDataService" schemaLocation="xsd/PatientDataService.xsd"/>
+        </schema>
+    </wsdl:types>
+    <wsdl:message name="PatientDataServiceRequestMessage">
+        <wsdl:part name="payload" element="client:PatientDataServiceProcessRequest"/>
+    </wsdl:message>
+    <wsdl:message name="PatientDataServiceResponseMessage">
+        <wsdl:part name="payload" element="client:PatientDataServiceProcessResponse"/>
+    </wsdl:message>
+    <wsdl:portType name="PatientDataService">
+        <wsdl:operation name="process">
+            <wsdl:input message="client:PatientDataServiceRequestMessage"/>
+            <wsdl:output message="client:PatientDataServiceResponseMessage"/>
+        </wsdl:operation>
+    </wsdl:portType>
+</wsdl:definitions>

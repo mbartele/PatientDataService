@@ -1,0 +1,35 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<xs:schema targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/top/RetrievePatientIdentifier" xmlns="http://xmlns.oracle.com/pcbpel/adapter/db/top/RetrievePatientIdentifier" elementFormDefault="qualified" attributeFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+   <xs:element name="PatientsCollection" type="PatientsCollection"/>
+   <xs:complexType name="PatientsCollection">
+      <xs:sequence>
+         <xs:element name="Patients" type="Patients" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="Patients">
+      <xs:sequence>
+         <xs:element name="id" type="xs:int"/>
+         <xs:element name="firstName" minOccurs="0" nillable="true">
+            <xs:simpleType>
+               <xs:restriction base="xs:string">
+                  <xs:maxLength value="50"/>
+               </xs:restriction>
+            </xs:simpleType>
+         </xs:element>
+         <xs:element name="lastName" minOccurs="0">
+            <xs:simpleType>
+               <xs:restriction base="xs:string">
+                  <xs:maxLength value="100"/>
+               </xs:restriction>
+            </xs:simpleType>
+         </xs:element>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:element name="RetrievePatientIdentifierSelect_firstName_lastNameInputParameters" type="RetrievePatientIdentifierSelect_firstName_lastName"/>
+   <xs:complexType name="RetrievePatientIdentifierSelect_firstName_lastName">
+      <xs:sequence>
+         <xs:element name="firstName" type="xs:string" minOccurs="1" maxOccurs="1"/>
+         <xs:element name="lastName" type="xs:string" minOccurs="1" maxOccurs="1"/>
+      </xs:sequence>
+   </xs:complexType>
+</xs:schema>

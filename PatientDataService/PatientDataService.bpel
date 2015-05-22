@@ -1,0 +1,170 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Tue Mar 16 16:28:30 CET 2010
+  Author:  lucas_j
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="PatientDataService"
+               targetNamespace="http://stmatthews.hospital.com/patient/PatientDataService"
+               xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+               xmlns:client="http://stmatthews.hospital.com/patient/PatientDataService"
+               xmlns:ora="http://schemas.oracle.com/xpath/extension"
+               xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+               xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:xpath20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk"
+         xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:oraext="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:dvm="http://www.oracle.com/XSL/Transform/java/oracle.tip.dvm.LookupValue"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/db/PatientDataService/PatientDataService/RetrievePatientIdentifier"
+         xmlns:bpel2="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:ns2="http://xmlns.oracle.com/pcbpel/adapter/db/top/RetrievePatientIdentifier"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:ns3="http://xmlns.oracle.com/pcbpel/adapter/db/PatientDataService/PatientDataService/RetrievePatientRecord"
+         xmlns:ns4="http://xmlns.oracle.com/pcbpel/adapter/db/sp/RetrievePatientRecord">
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      PARTNERLINKS                                                      
+      List of services participating in this BPEL process               
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  --> 
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="PatientDataService" partnerLinkType="client:PatientDataService" myRole="PatientDataServiceProvider"/>
+    <partnerLink name="RetrievePatientIdentifier"
+                 partnerLinkType="ns1:RetrievePatientIdentifier_plt"
+                 partnerRole="RetrievePatientIdentifier_role"/>
+    <partnerLink name="RetrievePatientRecord"
+                 partnerLinkType="ns3:RetrievePatientRecord_plt"
+                 partnerRole="RetrievePatientRecord_role"/>
+  </partnerLinks>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable" messageType="client:PatientDataServiceRequestMessage"/>
+
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable" messageType="client:PatientDataServiceResponseMessage"/>
+    <variable name="temperatureReading"
+              element="client:physicalCharacteristic"/>
+    <variable name="Invoke_RetrievePatientIdentifier_RetrievePatientIdentifierSelect_InputVariable"
+              messageType="ns1:RetrievePatientIdentifierSelect_inputParameters"/>
+    <variable name="Invoke_RetrievePatientIdentifier_RetrievePatientIdentifierSelect_OutputVariable"
+              messageType="ns1:PatientsCollection_msg"/>
+    <variable name="patientIdentifier" type="xsd:int"/>
+    <variable name="Invoke_RetrievePatientRecord_RetrievePatientRecord_InputVariable"
+              messageType="ns3:args_in_msg"/>
+    <variable name="Invoke_RetrievePatientRecord_RetrievePatientRecord_OutputVariable"
+              messageType="ns3:args_out_msg"/>
+  </variables>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in PatientDataService.wsdl) -->
+    <receive name="receiveInput" partnerLink="PatientDataService" portType="client:PatientDataService" operation="process" variable="inputVariable" createInstance="yes"/>
+    <switch name="Switch1">
+      <case condition="bpws:getVariableData('inputVariable','payload'
+,'/client:PatientDataServiceProcessRequest/patientId') = ''">
+        <sequence name="Sequence1">
+          <assign name="Assign1">
+            <copy>
+              <from variable="Invoke_RetrievePatientIdentifier_RetrievePatientIdentifierSelect_OutputVariable"
+                    part="PatientsCollection"
+                    query="/ns2:PatientsCollection/ns2:Patients[1]/ns2:id"/>
+              <to variable="patientIdentifier"/>
+            </copy>
+          </assign>
+          <invoke name="Invoke_RetrievePatientIdentifier"
+                  bpelx:invokeAsDetail="no"
+                  inputVariable="Invoke_RetrievePatientIdentifier_RetrievePatientIdentifierSelect_InputVariable"
+                  outputVariable="Invoke_RetrievePatientIdentifier_RetrievePatientIdentifierSelect_OutputVariable"
+                  partnerLink="RetrievePatientIdentifier"
+                  portType="ns1:RetrievePatientIdentifier_ptt"
+                  operation="RetrievePatientIdentifierSelect"/>
+        </sequence>
+      </case>
+      <otherwise>
+        <assign name="Assign2">
+          <copy>
+            <from variable="inputVariable" part="payload"
+                  query="/client:PatientDataServiceProcessRequest/patientId"/>
+            <to variable="patientIdentifier"/>
+          </copy>
+        </assign>
+      </otherwise>
+    </switch>
+    <assign name="Assign3">
+      <copy>
+        <from variable="patientIdentifier"/>
+        <to variable="Invoke_RetrievePatientRecord_RetrievePatientRecord_InputVariable"
+            part="InputParameters"
+            query="/ns4:InputParameters/ns4:P_PATIENT_ID"/>
+      </copy>
+    </assign>
+    <invoke name="Invoke_RetrievePatientRecord" bpelx:invokeAsDetail="no"
+            inputVariable="Invoke_RetrievePatientRecord_RetrievePatientRecord_InputVariable"
+            outputVariable="Invoke_RetrievePatientRecord_RetrievePatientRecord_OutputVariable"
+            partnerLink="RetrievePatientRecord"
+            portType="ns3:RetrievePatientRecord_ptt"
+            operation="RetrievePatientRecord"/>
+    <assign name="Transform1">
+      <bpelx:annotation>
+        <bpelx:pattern>transformation</bpelx:pattern>
+      </bpelx:annotation>
+      <copy>
+        <from expression="ora:doXSLTransformForDoc('xsl/RetrievePatientDataRecordOutput2OutputVariable.xsl', $Invoke_RetrievePatientRecord_RetrievePatientRecord_OutputVariable.OutputParameters)"/>
+        <to variable="outputVariable" part="payload"/>
+      </copy>
+    </assign>
+    <!-- Generate reply to synchronous request -->
+    <!--<assign name="Assign_1">
+      <copy>
+        <from>
+          <client:physicalCharacteristic xmlns:client="http://stmatthews.hospital.com/patient/PatientDataService">
+            <client:dateOfMeasurement>2010-12-28</client:dateOfMeasurement>
+            <client:whatWasMeasured>body temperature</client:whatWasMeasured>
+            <client:measuredValue>38.5</client:measuredValue>
+            <client:unitOfMeasurement>Degrees Celsius</client:unitOfMeasurement>
+          </client:physicalCharacteristic>
+        </from>
+        <to variable="temperatureReading"/>
+      </copy>
+      <copy>
+        <from expression="concat(bpws:getVariableData('inputVariable','payload','/client:PatientDataServiceProcessRequest/firstName'),' ',bpws:getVariableData('inputVariable','payload','/client:PatientDataServiceProcessRequest/lastName') )"/>
+        <to variable="outputVariable" part="payload"
+            query="/client:PatientDataServiceProcessResponse/name"/>
+      </copy>
+      <bpelx:append>
+        <bpelx:from variable="temperatureReading"
+                    query="/client:physicalCharacteristic"/>
+        <bpelx:to variable="outputVariable" part="payload"
+                  query="/client:PatientDataServiceProcessResponse"/>
+      </bpelx:append>
+    </assign>-->
+    <reply name="replyOutput" partnerLink="PatientDataService" portType="client:PatientDataService" operation="process" variable="outputVariable"/>
+  </sequence>
+</process>

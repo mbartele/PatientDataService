@@ -1,0 +1,25 @@
+<?binding.jca RetrievePatientIdentifier_db.jca?>
+<wsdl:definitions name="RetrievePatientIdentifier" targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/PatientDataService/PatientDataService/RetrievePatientIdentifier" xmlns:tns="http://xmlns.oracle.com/pcbpel/adapter/db/PatientDataService/PatientDataService/RetrievePatientIdentifier" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:top="http://xmlns.oracle.com/pcbpel/adapter/db/top/RetrievePatientIdentifier">
+    <plt:partnerLinkType name="RetrievePatientIdentifier_plt">
+        <plt:role name="RetrievePatientIdentifier_role">
+            <plt:portType name="tns:RetrievePatientIdentifier_ptt"/>
+        </plt:role>
+    </plt:partnerLinkType>
+    <wsdl:types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="http://xmlns.oracle.com/pcbpel/adapter/db/top/RetrievePatientIdentifier" schemaLocation="xsd/RetrievePatientIdentifier_table.xsd"/>
+        </schema>
+    </wsdl:types>
+    <wsdl:message name="RetrievePatientIdentifierSelect_inputParameters">
+        <wsdl:part name="RetrievePatientIdentifierSelect_inputParameters" element="top:RetrievePatientIdentifierSelect_firstName_lastNameInputParameters"/>
+    </wsdl:message>
+    <wsdl:message name="PatientsCollection_msg">
+        <wsdl:part name="PatientsCollection" element="top:PatientsCollection"/>
+    </wsdl:message>
+    <wsdl:portType name="RetrievePatientIdentifier_ptt">
+        <wsdl:operation name="RetrievePatientIdentifierSelect">
+            <wsdl:input message="tns:RetrievePatientIdentifierSelect_inputParameters"/>
+            <wsdl:output message="tns:PatientsCollection_msg"/>
+        </wsdl:operation>
+    </wsdl:portType>
+</wsdl:definitions>
